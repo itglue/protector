@@ -139,6 +139,7 @@ module Protector
 
           # Preserve associations from internal loading. We are going to handle that
           # ourselves respecting security scopes FTW!
+          relation = relation.clone
           associations, relation.preload_values = relation.preload_values, []
 
           @records = relation.send(:exec_queries).each { |record| record.restrict!(subject) }
@@ -179,6 +180,7 @@ module Protector
               end
             end
           else
+            relation = relation.clone
             relation.preload_values += includes_values
             relation.includes_values = []
           end
@@ -231,9 +233,7 @@ module Protector
 
         def protector_permit_strong_params(args)
           # strong_parameters integration
-          if Protector.config.strong_parameters? && args.first.respond_to?(:permit)
-            Protector::ActiveRecord::Adapters::StrongParameters.sanitize! args, true, protector_meta
-          end
+          Protector::ActiveRecord::Adapters::StrongParameters.sanitize! args, true, protector_meta
         end
 
 
