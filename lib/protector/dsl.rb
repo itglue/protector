@@ -334,7 +334,8 @@ module Protector
         # @yield [subject, instance]        Evaluates conditions described in terms of {Protector::DSL::Meta::Box}.
         # @yieldparam subject [Object]      Subject that object was restricted with
         # @yieldparam instance [Object]     Reference to the object being restricted (can be nil)
-        def protect(&block)
+        def protect(append: true, &block)
+          protector_meta.blocks = [] if append == false
           protector_meta << block
         end
 
